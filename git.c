@@ -8,9 +8,29 @@ int *buf,bufPosition=-1,prodCount,consCount,bufLen;
 pthread_t *prod,*cons;
 sem_t bufMutex,empCount,fillCount;
 
+int produce(pthread_t self)
+{
+	int i = 0;
+	int p = 1 + rand()%40;
+	while(!pthread_equal(*(prod+i),self) && i < prodCount)
+	i++;
+	printf("\nProducer %d produced %d",i+1,p);
+	return p;
+}
+
 void *producer()
 {
-	printf("\nProducer Function Called");	
+	while(1)     // Always True
+	{
+		int p = produce(pthread_self());   // Calling Produce Function
+		sem_wait(&empCount);
+		sem_wait(&bufMutex);
+		++bufPosition;
+		*(buf + bufPosition) = p; 
+		sem_post(&bufMutex);
+		sem_post(&fillCount);
+	//	sleep(1 + rand()%3);            //For Context Switching
+	}		
 }
 
 void *consumer()
