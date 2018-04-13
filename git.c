@@ -33,9 +33,34 @@ void *producer()
 	}		
 }
 
+void consume(int p,pthread_t self)
+{
+	int i = 0;
+	while(!pthread_equal(*(cons+i),self) && i < consCount)
+	i++;
+
+	printf("\nBuffer:");
+	for(i=0;i<=bufPosition;++i)
+	printf("%d ",*(buf+i));
+	printf("\nConsumer %d consumed %d \nCurrent buffer len: %d\n",i+1,p,bufPosition);
+	printf("\n---------------------------------\n");
+	
+}
+
 void *consumer()
 {
-	printf("\nConsumer Function Called");
+	int c;
+	while(1)
+	{
+		sem_wait(&fillCount);
+		sem_wait(&bufMutex);
+		c = *(buf+bufPosition);	
+		consume(c,pthread_self());
+		--bufPosition;
+		sem_post(&bufMutex);
+		sem_post(&empCount);
+		sleep(1+rand()%3);
+	}
 }
 
 int main()
@@ -74,6 +99,8 @@ int main()
 		else
 		printf("\nSuccessfully created consumer %d",i+1);
 	}
+	
+	printf("\n--------------------------------------------");
 	
 	for(i=0;i<prodCount;i++)
 	pthread_join(*(prod+i),NULL);
