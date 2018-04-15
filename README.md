@@ -1,7 +1,7 @@
 # Producer-Consumer Problem
 ## Operating System Project (4th Semester)
 
-The Producer-Counsumer Problem also known as Reader-Writer Problem, is an example of multi-process synchronization problem.
+The Producer-Counsumer Problem may seem to be similar to Reader-Writer Problem but it not so, both the examples of multi-process synchronization problem and about resource sharing.
 ### Problem
 To make sure that the producer won't try to append the data into buffer if it is full and that the consumer won't try to remove data from an empty buffer. Producer can't produce data when consumer is consuming and vice-versa.
 
